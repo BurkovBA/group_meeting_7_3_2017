@@ -24,11 +24,191 @@
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section data-background-image="/img/chromosomes_and_dna.png">Slide 1</section>
-				<section data-background-color="#FFFFFF">Slide 2</section>
+				<section data-background-image="/img/chromosomes_and_dna.png">
+					<h4>AngularJS - Genoverse</h4>
+					<hr>
+					<h4>Django REST Framework - Mongoengine</h4>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<h3>AngularJS - Genoverse</h3>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<iframe style="box-shadow: 1px black;" class="stretch" data-src="https://rnacentral.github.io/angularjs-genoverse"></iframe>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<h4>Web-component</h4>
+					<ul>
+						<li>We wanted 2-way data binding: URL, hyperlinks, browser and forms should be kept in sync</li>
+    					<li>Robust</li>
+						<li>Reusable - we might need it to improve the mapping of RNAs on genome</li>
+					</ul>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<h4>How to use?</h4>
+					<pre style="stretch"><code>
+<genoverse genome="human" chr="X" start="73792205" end="73829231">
+	<genoverse-track></genoverse-track>
+</genoverse>
+					</code></pre>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<img src="/img/DRF_logo.png" style="background: none; border: none; box-shadow: none;">
+					<img src="/img/Mongoengine_logo.png" style="background: none; border: none; box-shadow: none;">
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<img src="/img/MongoDB_logo.png" style="background: none; border: none; box-shadow: none;">
+					<p>NoSQL database</p>
+    				<ul>
+    					<li>Release: 2009, growth of interest: 2012, then plateau</li>
+						<li>According to my PyCon Russia mid-2016 'survey', 50% of ~350 devs are using MongoDB - on par with most popular SQL solution - Postgres</li>
+						<li>No-frills, data scientists & bioinformaticists love it</li>
+					</ul>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<section data-background-color="#FFFFFF">
+						<h4>MongoDB features</h4>
+						<p>
+							Tables &rarr; Collections (arrays)<br>
+							Rows &rarr; Documents (JSONs)<br>
+							SQL &rarr; Javascript
+						</p>
+					</section>
+
+					<section>
+						<h4>Tables &rarr; Collections (arrays)</h4>
+						<img src="/img/mongo_collections.png">
+					</section>
+
+					<section>
+						<h4>Rows &rarr; Documents<br></h4>
+						<img src="/img/mongo_documents.png">
+					</section>
+
+					<section>
+						<h4>Row &rarr; Document (JSON)</h4>
+						<img src="/img/mongo_document.png">
+					</section>
+
+					<section>
+						<h4>SQL &rarr; Javascript</h4>
+						<img src="/img/mongo_javascript.png">
+					</section>
+
+					<section data-background-color="#FFFFFF">
+						<h4>MongoDB features</h4>
+						<ul>
+							<li>Document-level transaction isolation, application-level transactions =(</li>
+							<li>GridFS for storing large files</li>
+							<li>Map-Reduce, views</li>
+							<li>mongos sharding system, replication system, be careful with security</li>
+							<li>IaaS for scaling: Scalegrid.io etc.</li>
+							<li>Robomongo - free and VERY nice admin interface</li>
+						</ul>
+					</section>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<section data-background-color="#FFFFFF">
+						<h4>Django and MongoDB projects</h4>
+						<p style="text-align: left;">
+							<a href="https://djangoproject.com">Django</a> - python framework for web development<br>
+							<a href="http://django-rest-framework.org">Django REST Framework (DRF)</a> - toolkit for REST APIs<br>
+							<a href="https://api.mongodb.com/python/current/">PyMongo</a> - low-level python client for MongoDB<br>
+							<a href="http://mongoengine.org">Mongoengine</a> - standalone python ODM for MongoDB<br>
+							<a href="https://django-mongodb-engine.readthedocs.io">Django-MongoDB-engine</a> - Django ODM for MongoDB, alternative to Mongoengine, dead by 2013.<br>
+							<a href="https://github.com/MongoEngine/django-mongoengine">Django-Mongoengine</a> - integration between Django and Mongoengine<br>
+							<a href="https://github.com/umutbozkurt/django-rest-framework-mongoengine">DRF-Mongoengine</a> - integration between DRF and Mongoengine<br>
+						</p>
+					</section>
+
+					<section data-background-color="#FFFFFF">
+						<h4>Django MongoDB ecosystem timeline</h4>
+						<iframe class="stretch" src='https://cdn.knightlab.com/libs/timeline3/latest/embed/index.html?source=1Pwu0K3A2XSChLB_kN1lxsHcf4TDVtw01MlHFR4P4vC4&font=Default&lang=en&initial_zoom=1&height=650' width='100%' height='650' webkitallowfullscreen mozallowfullscreen allowfullscreen frameborder='0'></iframe>
+					</section>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<h4>Mongoengine ODM</h4>
+					<pre class="stretch"><code>
+from mongoengine import *
+
+class Tool(Document):
+	label = StringField(required=True)
+	description = StringField(required=True, null=True)
+	inputs = ListField(EmbeddedDocumentField(ToolInput))
+
+class ToolInput(EmbeddedDocument):
+	name = StringField(required=True)
+	value = DynamicField(required=True)
+
+>>> tool = Tool.objects.create(
+...    label=”wget”,
+...    description="A non-interactive network downloader",
+...    inputs=[ToolInput(name="url", value="https://medium.com"])
+... )
+					</code></pre>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<h4>Django REST Framework + Mongoengine</h4>
+					<p>If Mongoengine is so similar to Django, it's natural to try and port Django REST Framework to it.</p>
+					<p>
+						DRF-Mongoengine:
+				    	~3000 lines of code, ~8000 lines of tests, 200+ stars on Github
+					</p>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<h4>DRF-Mongoengine</h4>
+					<pre><code>
+from rest_framework_mongoengine import serializers
+
+class ToolSerializer(serializers.DocumentSerializer):
+    class Meta:
+        model = Tool
+					</code></pre>
+					<pre><code>
+from rest_framework_mongoengine import viewsets
+
+class ToolViewSet(viewsets.ModelViewSet):
+    lookup_field = 'id'
+    serializer_class = ToolSerializer
+
+    def get_queryset(self):
+        return Tool.objects.all()
+					</code></pre>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<h4>Common Workflow Language REST API</h4>
+					<img src="/img/CWL.png" style="float: right; margin: 20px;">
+					<br style="text-align: left;">
+					    You almost don't need relations</br></br>
+						JSONField schema in Postgres can't be validated by DRF</br></br>
+    					Robust validation (200+ steps workflow correctly validated)</br></br>
+    					Browsable API
+					</p>
+				</section>
+
+				<section data-background-color="#FFFFFF">
+					<h4>Thank you!</h4>
+					<ul>
+						<li><a href="https://github.com/rnacentral/reveal.js">EBI theme for reveal.js</a><br></li>
+						<li>My <a href="https://medium.com/@vasjaforutube/django-mongodb-django-rest-framework-mongoengine-ee4eb5857b9a">post on Medium.com</a> about DRF-ME</li>
+					</ul>
+					<img style="width: 640px;" src="/img/2_days_without_new_javascript_framework.png">
+				</section>
+
 			</div>
 			<img style="border: none; background: none; box-shadow: none; position: absolute; bottom: 30px; left: 0%; transform: scale(0.5); z-index: 1000;" src="/img/logo.png">
-			<footer style="position: absolute; background: linear-gradient(to right, rgba(0,67,66,1), rgba(0,67,66,0.35)); width: 100%; bottom: 15px; height:100px; z-index: 1;"></footer>
+			<footer style="position: absolute; background: linear-gradient(to right, rgba(0,67,66,1), rgba(0,67,66,0.35)); width: 15%; bottom: 15px; height:100px; z-index: 1;"></footer>
 		</div>
 
 		<script src="lib/js/head.min.js"></script>
@@ -45,7 +225,9 @@
 					{ src: 'plugin/markdown/markdown.js' },
 					{ src: 'plugin/notes/notes.js', async: true },
 					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } }
-				]
+				],
+
+				slideNumber: 'h/v'
 			});
 		</script>
 	</body>
